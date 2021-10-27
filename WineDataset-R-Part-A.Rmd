@@ -1,0 +1,363 @@
+---
+title: "R Notebook - Red Wine Dataset - Assignment 1"
+output: html_notebook
+---
+
+# Wine Dataset - Assignment 1
+
+**1. Read the dataframe into the system**
+
+The red wine dataset is being read
+
+```{r}
+ wine <- read.csv(file = 'C:/Users/chakr/Downloads/winequality-red.csv', sep=";")
+```
+
+**2. Verify if the data is loaded correctly**
+
+A check is being performed to ensure the data has been loaded in the appropriate format.
+
+```{r}
+head(wine)
+```
+
+
+**3. What is the sample size?**
+
+The sample size of the dataset can be found using the str() and dim() functions.
+
+```{r}
+str(wine)
+```
+```{r}
+dim(wine)
+```
+
+
+**Answer 3 -**
+From the above code output, we can see that the sample size is 1599 rows.
+
+
+
+**4.1 How can you summarize the data of each variable in a concise way? What statistics are you going to present?**
+
+The summary() function allows us to get a concise summary in R
+```{r}
+summary(wine)
+```
+Checking for nulls
+
+```{r}
+is.null(wine)
+```
+Checking for unique values on categorical variable 'quality'
+
+```{r}
+unique(wine[c('quality')])
+```
+**Answer 4.1 -**
+A few statistics that cover the summary of all the attributes in a data frame are described by the mean, standard deviation, median, minimum values, maximum values and the inter-quartile ranges which can have an idea on the skewness of the data and the general distribution of the data.
+
+  1. From the above summary we notice that all the columns numeric.
+  2. All the columns except 'quality' are numeric and continuos variables.
+  3. Quality is a categorical variable having and integer datatype which is discrete and as seen above has 6 unique values [5, 6, 7, 4, 8, 3].
+  4. The data provided has 12 columns and 1599 rows with no null values.
+  5. The summary of the data indicates the mean, standard deviation, quartiles and minimum and maximum values. For example:
+    5.1 Volatile Acidity has a mean: 0.5278, standard deviation: 0.1796, 50% percentile at : 0.52, max:1.58. 
+    
+    
+The individual analysis of each variables can be found below:
+
+1. **fixed.acidity** -
+i) There is a difference between the mean and median values of in fixed acidity with mean being higher due to the possible outliers in the data.
+ii) The standard deviation of fixed.acidity is:  1.7410
+      
+```{r}
+sd(fixed.acidity)
+```
+iii) The data has no null values and is numeric continuos.
+iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+      
+```{r}
+library(moments)
+skewness(fixed.acidity)
+```
+```{r}
+IQR(fixed.acidity)
+```
+2. **volatile.acidity**-
+i) There is a very minor difference between the mean and median values of in volatile acidity with mean being slightly on the higher due to the lesser number of outliers in the data.
+ii) The standard deviation of fixed.acidity is:  0.1790597
+        
+```{r}
+sd(volatile.acidity)
+```
+iii) The data has no null values and is numeric continuos.
+iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(volatile.acidity)
+```
+```{r}
+IQR(volatile.acidity)
+```
+3. **citric.acid**-
+i) There is a very minor difference between the mean and median values of in citric.acid with mean being slightly on the higher due to the lesser number of outliers in the data.
+ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(citric.acid)
+```
+iii) The data has no null values and is numeric continuos.
+iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range
+        
+```{r}
+skewness( citric.acid)
+```
+```{r}
+IQR( citric.acid)
+```  
+4. **residual.sugar**-
+        i) There is a considerable difference between the mean and median values of in residual.sugar with mean being considerably on the higher due to the lesser number of outliers in the data.
+        ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(residual.sugar)
+```
+        iii) The data has no null values and is numeric continuos.
+        iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+        v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(residual.sugar)
+```
+
+```{r}
+IQR(residual.sugar)
+```
+5. **chlorides**-
+        i) There is a  difference between the mean and median values of in chlorides with mean being on the higher due to the lesser number of outliers in the data.
+        ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(chlorides)
+```
+        iii) The data has no null values and is numeric continuos.
+        iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+        v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(chlorides)
+```
+
+```{r}
+IQR(chlorides)
+```
+
+6. **free.sulfur.dioxide**-
+        i) There is a  difference between the mean and median values of in free.sulfur.dioxide with mean being on the higher due to the lesser number of outliers in the data.
+        ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(free.sulfur.dioxide)
+```
+        iii) The data has no null values and is numeric continuos.
+        iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+        v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(free.sulfur.dioxide)
+```
+
+```{r}
+IQR(free.sulfur.dioxide)
+```
+7. **total.sulfur.dioxide**-
+i) There is a  considerable difference between the mean and median values of in total.sulfur.dioxide with mean being on the higher due to the lesser number of outliers in the data.
+ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(free.sulfur.dioxide)
+```
+iii) The data has no null values and is numeric continuos.
+iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(total.sulfur.dioxide)
+```
+
+```{r}
+IQR(total.sulfur.dioxide)
+```
+8. **density**-
+        i) There is a  almost no difference between the mean and median values of in density with mean being equal to median because of no outliers in the data.
+        ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(density)
+```
+        iii) The data has no null values and is numeric continuos.
+        iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+        v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(density)
+```
+
+```{r}
+IQR(density)
+```
+9. **pH**-
+        i) There is a  almost no difference between the mean and median values of in pH with mean being equal to median because of no outliers in the data.
+        ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(pH)
+```
+        iii) The data has no null values and is numeric continuos.
+        iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+        v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(pH)
+```
+
+```{r}
+IQR(pH)
+```
+10. **sulphates**-
+        i) There is a  slight difference between the mean and median values of in sulphates with mean being on the higher due to the lesser number of outliers in the data.
+        ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(sulphates)
+```
+        iii) The data has no null values and is numeric continuos.
+        iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+        v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(sulphates)
+```
+
+```{r}
+IQR(sulphates)
+```
+11. **alcohol**-
+        i) There is a  slight difference between the mean and median values of in alcohol with mean being on the higher due to the lesser number of outliers in the data.
+        ii) The standard deviation of fixed.acidity is:  0.1948011
+        
+```{r}
+sd(alcohol)
+```
+        iii) The data has no null values and is numeric continuos.
+        iv) There is a positive skew in the data due to outliers as seen from below plots and the summary statistics as the mean is greater than the median. 
+        v) The positive skewness and the spread between the middle 50 percentile of the data can be confirmed by the below verifications of skewness and Inter-Quartile range:
+        
+```{r}
+skewness(alcohol)
+```
+
+```{r}
+IQR(alcohol)
+```
+12. **quality**-
+        i) This is a categorical target variable which is ordinal as it has a specific order why which quality of the wine is assessed. 
+
+
+
+**5.1 Any outliers?**
+
+```{r}
+library("ggplot2")
+for(column_names in colnames(wine)) {
+subplot_boxplot <- ggplot(wine, aes_string(x= column_names)) + 
+    geom_boxplot(outlier.shape = 1, fill ="#658cbb", outlier.colour = "#000080")
+
+print(subplot_boxplot)
+}
+```
+
+**Answer 5.1 -**
+*Yes, according to the above boxplots there are many outliers in the data in the following columns columns summarized below:*
+
+  1. The highest number of outliers are in the attributes 'residual sugar' and 'chlorides' as seen in the graph that are significantly higher than 1.5*IQR
+  2. The attributes 'fixed acidity', 'volatile acidity', 'free sulfur dioxide', 'total sulfur dioxide', 'sulphates' show the next highest number of outliers
+  3.The attributes 'alocohol', 'ph' and 'density' show the outliers on both ends of the whiskers +/- 1.5IQR.
+  4. The attribute 'citric acid' has the least number of outliers as most of the data fits within the +/- 1.5IQR range.
+
+
+**5.2 Do you have any concerns about the data quality?**
+```{r}
+for(column_names in colnames(wine)) {
+subplots_histogram <- ggplot(wine,aes_string(x= column_names)) + 
+    geom_histogram(color="black", fill="#658cbb", binwidth=0.15, aes(y = ..density..)) +
+  stat_function(size = 0.5,
+                fun = dnorm,
+                col = "#000080",
+                args = list(mean = mean(wine[[column_names]]),
+                            sd = sd(wine[[column_names]])))
+print(subplots_histogram)
+}
+```
+
+
+**Answer 5.2 -**
+*On analyzing the data distribution we can highlight the below points that could pose a concern:*
+
+  1. All attributes/columns except 'citric acid' input variable have significant outliers either on the lower or the upper tail of the whiskers in the box plot. These outliers pull the mean away from the median and cause a skew in the data. If the mean is represented as a measure of the data, it would be an incorrect estimtion of the dataset due to significant outliers.
+  2. In the above case, we would have to analyse the business significance of the columns and either proceed to eliminate the outliers or retain them and substiute with the trimmed mean or retain the outliers as it is based on weightage of each column.
+  3. From the distplot plotted above we notice that apart from the columns 'alcohol', 'sulphates' and 'residual sugar', all the columns are are either heavily skewed or lightly skewed in either direction, and does not normal distribution.
+  4. The column 'total sulfur dioxide' has a significant difference between mean = 46.46 and median= 38.00 indicating a heavily skewed distribution in terms of the data, and is the most skewed column in the dataset provided.
+  5. There are no missing values in any of the rows of the dataframe. 
+  
+**6. How can you visualize the distribution of each variable?**
+
+### DISTRIBUTION -1
+```{r}
+for(column_names in colnames(wine)) {
+subplots_histogram <- ggplot(wine,aes_string(x= column_names)) + 
+    geom_histogram(color="black", fill="#658cbb", binwidth=0.15, aes(y = ..density..)) +
+  stat_function(size = 0.5,
+                fun = dnorm,
+                col = "#000080",
+                args = list(mean = mean(wine[[column_names]]),
+                            sd = sd(wine[[column_names]])))
+print(subplots_histogram)
+}
+```
+
+### DISTRIBUTION - 2
+
+```{r}
+for(column_names in colnames(wine)) {
+subplots_scatter <- ggplot(wine, aes_string(x= column_names, y= "quality")) +
+  geom_point(size=1.5, shape=1, color = "#658cbb")
+print(subplots_scatter)
+}
+```
+
+**Answer 6 -**
+
+The distribution of each variable can be viewed through a histogram or a distplot. The above distribution numbered 1 is the distplot on which a normal distribution is fit to show the trend of the distribution. The plot of each input variable against the output variable 'quality' is also described in the distribution numbered 2 which shows the impact of each input against the output.
+
+
+**7. Do you see any skewed distributions?**
+
+According to the Distribution -1 shown for the above question we notice that most of the distributions are skewed.
+
+  - fixed acidity -->	Right Skewed(Slightly)
+  - volatile acidity -->	Right Skewed(Slightly)
+  - citric acid	Right -->	 Skewed(Heavily)
+  - residual sugar -->		Right Skewed(Heavily)
+  - chlorides -->		Right Skewed(Slightly)
+  - free sulfur dioxide -->		Right Skewed(Heavily)
+  - total sulfur dioxide -->		Right Skewed(Heavily)
+  - density -->		Normally distributed
+  - pH -->		Normally distributed
+  - sulphates -->		Right Skewed(Slightly)
+  - alcohol -->		Right Skewed(Slightly)

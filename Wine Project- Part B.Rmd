@@ -1,0 +1,329 @@
+---
+title: "Wine Dataset- Part B - R"
+output: html_notebook
+---
+
+
+
+**Reading the data from file**
+
+```{r}
+wine <- read.csv(file = 'C:/Users/chakr/Downloads/winequality-red.csv', sep=";")
+attach(wine)
+```
+
+## **1. Suppose the population mean of the variable “density” is µ , do the following inferences:**
+**a. Provide an estimate of µ based on the sample**
+```{r}
+mu.hat <- mean(density)
+mu.hat
+```
+
+**Answer - **
+The estimate of mean from the sample of 1599 observations is 0.9967467. As the population is defined as all the red wines produced in the north of Portugal, we use the given 1599 observations as the sample. 
+
+
+**b. Use the Central Limit Theorem (CLT) to quantify the variability of your estimate**
+```{r}
+sd.mu.hat <- sd(density)/sqrt(length(density))
+mu_clt.hat <- mean(density)
+sd.mu.hat
+```
+```{r}
+library("ggplot2")
+ggplot(data.frame(density), aes(x=density))+
+  geom_density(color="darkblue", fill="lightblue")
+```
+
+**Answer -** 
+The variability of the above estimate in the first question is the standard deviation by the square root of n, where n is the sample size. The value for variability is found to be 4.71981e-05. The distribution follows a normal distribution.
+
+
+**c. Use the CLT to give a 95% confidence interval for µ**
+```{r}
+c(mu_clt.hat-2*sd.mu.hat, mu_clt.hat+2*sd.mu.hat)
+```
+**Answer -** 
+The 95% confidence interval is given by mu.hat+/- 2xsigma.hat. From the previously calculated value of mu.hat and sd.hat we will calculate the 95% confidence interval which ranges from **0.9966523** to **0.9968411**. 
+
+
+**d. Use the bootstrap method to do parts b and c, and compare the results with those obtained from the CLT. State your findings.** 
+```{r}
+mu_b.hat.set<-NULL
+for(k in 1:4500){ 
+sample.bootstrap<-sample(density, size=1599, replace=T)
+mu_b.hat.set[k]<-mean(sample.bootstrap)
+}
+sd(mu_b.hat.set)
+mean(mu_b.hat.set)
+
+```
+
+**The quantile ranges for 95% confidence interval are:**
+
+```{r}
+mu_b.ci <- quantile(mu_b.hat.set, prob=c(.025,.975))
+mu_b.ci
+```
+**The confidence intervals are 0.9966547 and 0.9968406.**
+
+```{r}
+tab <- matrix(c(sd(mu_b.hat.set), mean(mu_b.hat.set), sd.mu.hat, mu_clt.hat), ncol=2, byrow=TRUE)
+colnames(tab) <- c('Standard Deviation','Mean')
+rownames(tab) <- c('Bootstrap','CLT')
+tab <- as.table(tab)
+tab
+```
+```{r}
+hist(mu_b.hat.set, prob=TRUE)
+lines(density(mu_b.hat.set), col="blue", lwd=2)
+```
+
+**Answer -** 
+The mean and the standard deviation  from the bootstrap and CLT methods are comparable as they are quite close. The standard deviation from the bootstrap method is slightly higher having the value 4.757524e-05, whereas the standard deviation obtained from the sample using CLT is 4.719810e-05. If we increase the the number of samples taken then the value will converge to the population statistic.
+\n The confidence intervals obtained from the bootstrap method is almost equivalent to the intervals obtained from CLT. 
+\n The bootstrap sampling distribution follows a normal distribution as seen from the above plot.
+ 
+
+**e. Can we use a normal distribution to model “density”? If yes, what are the maximum likelihood estimates of the mean and standard deviation? Please provide their standard errors as well.**
+
+```{r}
+hist(density, prob=TRUE)
+lines(density.default(density), col="blue", lwd=2)
+```
+
+
+```{r}
+qqnorm(density, frame = FALSE)
+qqline(density, col = "steelblue", lwd = 2)
+```
+
+```{r}
+library(stats4)
+density_scaled <- density*10
+log.likelihood<- 0
+minuslog.lik<-function(mu, sigma){ 
+  for(i in 1:1599){
+log.likelihood <- log.likelihood + log(dnorm(x=density_scaled[i],mean=mu, sd=sigma))
+  }
+  return(-log.likelihood)
+}
+
+est <- mle(minuslog=minuslog.lik, start = list(mu = mean(density_scaled),
+                                sigma = sd(density_scaled)))
+summary(est)
+```
+**Answer -**
+\n The data of density in the wines dataset follows a normal distribution according to the above plots.
+\n The maximum likelihood estimates can be found using the the above function. 
+\n The MLE's of the mean and standard deviation statistics after transformation are:
+\n **Mean :** 
+\n *Estimate*: 0.996746679 , *Standard Error*: 0.00004719810
+\n **Standard Deviation :** 
+\n *Estimate*: 0.001887334 , *Standard Error*: 0.00003296881
+
+
+## **2. Suppose the population mean of the variable “residual sugar” is µ , answer the following questions.**
+
+**a. Provide an estimate of µ based on the sample;**
+```{r}
+mu_residual.hat <- mean(residual.sugar)
+mu_residual.hat
+```
+**Answer - **
+\n The estimate of mean from the sample of 1599 obervations for residual sugar is 2.538806. As the population is defined as all the red wines produced in the north of Portugal, we use the given 1599 observations as the sample.
+
+
+**b. Noting that the sample distribution of “residual sugar” is highly skewed, can we use the CLT to quantify the variability of your estimate? Can we use the CLT to give a 95% confidence interval for µ? If yes, please give your solution. If no, explain why.**
+
+```{r}
+hist(residual.sugar, prob=TRUE)
+lines(density(residual.sugar), col="blue", lwd=2)
+```
+**Answer -** 
+\n As we can see from the above plot the distribution for residual sugar is highly positively skewed. But as CLT follows that the sample means will be normally distributed even though the population is not normally distributed, therefore we can use CLT to quantify the variability of the above estimate of the mean. 
+
+```{r}
+sd.mu_residual.hat <- sd(residual.sugar)/sqrt(length(residual.sugar))
+mu_residual_clt.hat <- mean(residual.sugar)
+sd.mu_residual.hat
+```
+
+**Answer -** 
+\n The CLT gives us that the variability of the data is 0.03525922. 
+
+```{r}
+c(mu_residual_clt.hat-2*sd.mu_residual.hat, mu_residual_clt.hat+2*sd.mu_residual.hat)
+```
+**Answer -** 
+\n The 95% confidence interval is given by mu.hat+/- 2xsigma.hat. From the previously calculated value of mu.hat and sd.hat we will calculate the 95% confidence interval which ranges from **2.468287** to **2.609324**. 
+
+
+**c. Use the bootstrap method to do part b. Is the bootstrap confidence interval symmetric?** 
+
+```{r}
+mu_residual_boot.hat.set<-NULL
+for(k in 1:4500){ 
+residual.bootstrap<-sample(residual.sugar, size=1599, replace=T)
+mu_residual_boot.hat.set[k]<-mean(residual.bootstrap)
+}
+sd(mu_residual_boot.hat.set)
+mean(mu_residual_boot.hat.set)
+```
+
+The quantile ranges for 95% confidence interval are:
+
+```{r}
+mu_b_residual.ci <- quantile(mu_residual_boot.hat.set, prob=c(.025,.975))
+mu_b_residual.ci
+```
+**Answer - **  The confidence intervals are **2.472623** and **2.609916**.
+
+```{r}
+tab <- matrix(c(sd(mu_residual_boot.hat.set), mean(mu_residual_boot.hat.set), sd.mu_residual.hat, mu_residual_clt.hat), ncol=2, byrow=TRUE)
+colnames(tab) <- c('Standard Deviation','Mean')
+rownames(tab) <- c('Bootstrap','CLT')
+tab <- as.table(tab)
+tab
+```
+```{r}
+hist(mu_residual_boot.hat.set, prob=TRUE)
+lines(density(mu_residual_boot.hat.set), col="blue", lwd=2)
+```
+
+**Answer -** 
+\n Yes the bootstrap is symmetric around the confidence interval.
+
+
+**d. Can we use a normal distribution to model “residual sugar”? If no, what distribution do you think can approximate its empirical distribution? What parameters are needed to characterize such a distribution? what are their maximum likelihood estimates? Please provide their standard errors as well.** 
+
+
+```{r}
+hist(residual.sugar, prob=TRUE)
+lines(density.default(residual.sugar), col="blue", lwd=2)
+```
+
+**Answer -** 
+No we cannot model residual sugar using the normal distribution as the data is heavily positively skewed.  
+\n Instead in this case we can use the Log-Normal Distribution which can be used to approximate its empirical distribution, as by theoretical definition its a distribution that is normally distributed if the logarithm is normally distributed. The parameters needed to characterize such a distribution is the mean and the standard deviation.
+
+
+```{r}
+options(warn=-1)
+log.likelihood<- 0
+minuslog.lik<-function(mu, sigma){ 
+  for(i in 1:1599){
+log.likelihood <- log.likelihood + log(dlnorm(x=residual.sugar[i],meanlog=mu, sdlog=sigma))
+  }
+  return(-log.likelihood)
+}
+
+est <- mle(minuslog=minuslog.lik, start = list(mu = log(mean(residual.sugar)), sigma = log(sd(residual.sugar))))
+summary(est)
+```
+**Answer -**
+\n The data of residual sugar in the wines data-set follows a normal distribution according to the above plots.
+\n The maximum likelihood estimates can be found using the the above function. 
+\n The MLE's of the mean and standard deviation statistics  are:
+\n **Mean : **
+\n *Estimate*: 0.8502341 , *Standard Error*: 0.008935942
+\n **Standard Deviation :** 
+\n *Estimate*: 0.3573260 , *Standard Error*: 0.006318293
+
+
+
+## **3. We classify those wines as “excellent” if their rating is at least 7. Suppose the population proportion of excellent wines is p. Do the following:**
+
+**a. Use the CLT to derive a 95% confidence interval for p**
+
+**Answer -**
+\n The Bernoulli distribution models any data generating process that can
+be thought of as tossing a coin with a probability 𝑝 of seeing the head.
+We say that a random variable X follows a Bernoulli distribution if
+\n 1. It only has two possible outcomes 0 and 1 (no/yes); and
+\n 2. Its probabilities satisfy 
+\n So in this case we will assume the probability of getting atleast 7 as the wine quality as the outcome 1 and the the probability of getting less than 7 as 0.  
+
+```{r}
+excellent <- as.numeric(quality >= 7)
+```
+Calculation p :
+```{r}
+p <- mean(excellent)
+p
+
+```
+
+Calculating standard deviation:
+```{r}
+std_quality <- sqrt(p*(1-p)/length(excellent))
+std_quality
+```
+
+```{r}
+c(p-2*std_quality, p+2*std_quality)
+```
+**Answer -** The 95% confidence interval is given by mu.hat+/- 2*sigma.hat. From the previously calculated value of mu.hat and sd.hat we will calculate the 95% confidence interval which ranges from 0.1185805 to 0.1528392. 
+
+**b. Use the bootstrap method to derive a 95% confidence interval for p**
+
+```{r}
+mu_p_boot.hat.set<-NULL
+for(k in 1:4500){ 
+excellent.bootstrap<-sample(excellent, size=1599, replace=T)
+mu_p_boot.hat.set[k]<-mean(excellent.bootstrap)
+}
+sd(mu_p_boot.hat.set)
+mean(mu_p_boot.hat.set)
+```
+
+The quantile ranges for 95% confidence interval are:
+
+```{r}
+mu_b_excellent.ci <- quantile(mu_p_boot.hat.set, prob=c(.025,.975))
+mu_b_excellent.ci
+```
+**Answer- ** 
+The confidence intervals after bootstrap are 0.1188243 and 0.1532208.
+
+
+```{r}
+hist(mu_p_boot.hat.set, prob=TRUE)
+lines(density(mu_p_boot.hat.set), col="blue", lwd=2)
+```
+
+**c. Compare the two intervals. Is there any difference worth our attention?** 
+
+
+**Answer -** 
+\n The confidence interval obtained through CLT:
+\n **Upper Limit** - 0.1185805 **Lower Limit**- 0.1528392
+\n The confidence interval obtained through Bootstrap:
+**Upper Limit** - 0.1188243 **Lower Limit**- 0.1532208 
+
+\n Both the confidence intervals are similar and therefore there is no difference worth our attention. 
+
+
+**d. What is the maximum likelihood estimate of p and its standard error?**
+
+```{r}
+log.likelihood<- 0
+minuslog.lik<-function(p){ 
+  for(i in 1:1599){
+log.likelihood <- log.likelihood + log(dbinom(excellent[i], size=1, prob=p))
+  }
+  return(-log.likelihood)
+}
+
+est <- mle(minuslog=minuslog.lik, start = list(p = p))
+summary(est)
+```
+**Answer -**
+The maximum likelihood estimates can be found using the the above function. 
+The MLE's of p are:
+**p : **
+*Estimate*: 0.1357098 , *Standard Error*: 0.008564278
+
+
+
+
